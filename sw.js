@@ -1,5 +1,5 @@
 // Kotonoha service worker — naikkan VERSION setiap kali kamu update index.html
-const VERSION = "kotonoha-v1.3.0";
+const VERSION = "kotonoha-v1.4.0";
 const CORE = [
   "./",
   "./index.html",
