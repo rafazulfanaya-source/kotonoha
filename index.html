@@ -5934,6 +5934,86 @@ header #streak-pill{
   @keyframes ktSheetIn{from{opacity:0;transform:translate3d(0,26px,0) scale(.965)}to{opacity:1;transform:none}}
 }
 </style>
+<style id="kt-motion2">
+/* ===== KOTONOHA motion v2: toast pop-up + penyempurnaan animasi ===== */
+
+/* ---- TOAST: pop-up kaca di atas ---- */
+body .toast{
+  position:fixed;top:calc(16px + env(safe-area-inset-top));bottom:auto!important;left:50%!important;right:auto;
+  width:max-content;max-width:min(90vw,430px);box-sizing:border-box;
+  display:flex;align-items:center;gap:13px;
+  padding:14px 22px 17px 14px;border-radius:22px;
+  font-size:14.5px;font-weight:650;line-height:1.35;letter-spacing:.01em;color:#f6f3ff;
+  white-space:normal;text-align:left;
+  background:linear-gradient(135deg,rgba(52,42,98,.80),rgba(26,23,54,.88));
+  -webkit-backdrop-filter:blur(24px) saturate(170%);backdrop-filter:blur(24px) saturate(170%);
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:0 22px 60px rgba(8,6,28,.55),0 2px 10px rgba(8,6,28,.35),inset 0 1px 0 rgba(255,255,255,.16);
+  z-index:12000;opacity:0;pointer-events:none;overflow:hidden;
+  transform:translate(-50%,-26px) scale(.93);
+  transition:opacity .35s ease,transform .5s cubic-bezier(.4,0,.2,1);
+}
+body .toast.show{opacity:1;transform:translate(-50%,0) scale(1);transition:opacity .45s ease,transform .9s cubic-bezier(.22,1.18,.36,1)}
+body.desktop-ui .toast{top:24px;bottom:auto!important;left:calc(50% + var(--koto-sidebar,0px)/2)!important;font-size:14.5px!important}
+body .toast::before{
+  content:"✿";flex:0 0 auto;display:grid;place-items:center;width:34px;height:34px;border-radius:12px;
+  font-size:17px;font-weight:800;color:#fff;
+  background:linear-gradient(145deg,#f08bbf,#a78bfa);box-shadow:0 6px 16px rgba(167,139,250,.38),inset 0 1px 0 rgba(255,255,255,.35);
+}
+body .toast[data-kind="ok"]::before{content:"✓";background:linear-gradient(145deg,#5fd3b3,#3aa68f);box-shadow:0 6px 16px rgba(58,166,143,.4),inset 0 1px 0 rgba(255,255,255,.35)}
+body .toast[data-kind="info"]::before{content:"↻";background:linear-gradient(145deg,#8fb4ff,#7a78f0);box-shadow:0 6px 16px rgba(122,120,240,.4),inset 0 1px 0 rgba(255,255,255,.35)}
+body .toast[data-kind="warn"]::before{content:"!";background:linear-gradient(145deg,#f4c27a,#e08f5e);box-shadow:0 6px 16px rgba(224,143,94,.4),inset 0 1px 0 rgba(255,255,255,.35)}
+body .toast::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:7px;height:2.5px;border-radius:3px;
+  background:linear-gradient(90deg,#f08bbf,#a78bfa);opacity:.9;transform-origin:left center;transform:scaleX(0);
+}
+body .toast.show[data-run="a"]::after{animation:ktBarA 2.6s linear forwards}
+body .toast.show[data-run="b"]::after{animation:ktBarB 2.6s linear forwards}
+@keyframes ktBarA{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes ktBarB{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+/* ---- Transisi halus untuk elemen yang tadinya langsung berganti ---- */
+body .nav-btn,body .quiz-mode-tab,body .home-menu-card,body .home-continue,body .home-review-card,
+body .carousel-dots button,body .carousel-arrow,body .accent-swatch,body .settings-inline-btn,body .home-stat,body .chip{
+  transition:color .4s ease,background-color .4s ease,border-color .4s ease,box-shadow .45s ease,opacity .4s ease,filter .4s ease;
+}
+body .nav-icon,body .nav-label{transition:color .4s ease,opacity .4s ease}
+
+/* ---- Tombol .btn: tekan lembut, lepas membal tenang ---- */
+body .btn{transition:transform .6s cubic-bezier(.22,1.15,.36,1),background-color .35s ease,border-color .35s ease,color .35s ease,box-shadow .35s ease,opacity .35s ease}
+body .btn:active{transform:scale(.972);transition-duration:.16s,.35s,.35s,.35s,.35s,.35s}
+
+/* ---- Progress: mengisi pelan ---- */
+body .progress-fill,body #study-progress{transition:width .9s cubic-bezier(.22,1,.36,1)}
+
+@media (prefers-reduced-motion:no-preference){
+  /* Jawaban kuis muncul berurutan */
+  body .answers .answer{animation:ktRise .7s cubic-bezier(.22,1,.36,1) backwards}
+  body .answers .answer:nth-child(1){animation-delay:.04s}
+  body .answers .answer:nth-child(2){animation-delay:.1s}
+  body .answers .answer:nth-child(3){animation-delay:.16s}
+  body .answers .answer:nth-child(4){animation-delay:.22s}
+  body .answers .answer:nth-child(5){animation-delay:.28s}
+  body .answers .answer:nth-child(n+6){animation-delay:.32s}
+  body .answer.correct{animation:ktCorrect .8s cubic-bezier(.22,1,.36,1)}
+  body .answer.wrong{animation:ktWrong .6s cubic-bezier(.36,.07,.19,.97)}
+
+  /* Batang aktivitas tumbuh dari bawah */
+  body #home-activity-bars>*{transform-origin:50% 100%;animation:ktBarGrow 1s cubic-bezier(.22,1,.36,1) backwards}
+  body #home-activity-bars>*:nth-child(1){animation-delay:.05s}
+  body #home-activity-bars>*:nth-child(2){animation-delay:.1s}
+  body #home-activity-bars>*:nth-child(3){animation-delay:.15s}
+  body #home-activity-bars>*:nth-child(4){animation-delay:.2s}
+  body #home-activity-bars>*:nth-child(5){animation-delay:.25s}
+  body #home-activity-bars>*:nth-child(6){animation-delay:.3s}
+  body #home-activity-bars>*:nth-child(7){animation-delay:.35s}
+  @keyframes ktBarGrow{from{transform:scaleY(.08);opacity:.2}to{transform:scaleY(1);opacity:1}}
+
+  /* Banner motivasi: ganti slide dengan fade + geser pelan */
+  body .hero-slide.active{animation:ktBanner 1s cubic-bezier(.22,1,.36,1) backwards!important}
+  @keyframes ktBanner{from{opacity:0;transform:translate3d(18px,0,0)}to{opacity:1;transform:none}}
+}
+</style>
 </head>
 <body class="page-locked">
 <div id="kt-intro" role="presentation" aria-hidden="true">
@@ -6176,7 +6256,7 @@ function save(){
     });
   }
 }
-function toast(msg){const el=$("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("show"),1900);}
+function toast(msg){const el=$("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("show"),2600);}
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function dueCards(){return ALL.filter(c=>state.review[idOf(c)] && !has(state.known,c));}
 function uniqueQuizCards(cards){
@@ -6375,7 +6455,7 @@ function renderStudyCard(){
   $("card-front-reading").textContent="";$("card-back-word").textContent="";return;
  }
  studyIndex=(studyIndex+studyCards.length)%studyCards.length;
- const c=studyCards[studyIndex];flipped=false;$("flashcard").classList.remove("flipped");
+ const c=studyCards[studyIndex];flipped=false;{const fc=$("flashcard"),ci=fc.querySelector(".card-inner");if(fc.classList.contains("flipped")&&ci){ci.style.transition="none";fc.classList.remove("flipped");void ci.offsetWidth;ci.style.transition="";}else fc.classList.remove("flipped");}
  const word=displayWord(c),reading=readingText(c),kanjiNode=$("card-kanji"),frontReadingNode=$("card-front-reading");
  const hasSeparateReading=Boolean(c.kanji&&c.kanji!==reading);
  kanjiNode.textContent=activeMode==="vocabulary"?String(c.kanji||""):word;
@@ -6417,9 +6497,9 @@ function moveStudy(delta){
   if(wrap._kotoCardAnimation)wrap._kotoCardAnimation.cancel();
   const direction=delta>=0?1:-1;
   const animation=wrap.animate([
-   {opacity:.48,transform:`translate3d(${direction*13}px,0,0) scale(.992)`},
+   {opacity:0,transform:`translate3d(${direction*34}px,0,0) scale(.965)`},
    {opacity:1,transform:"translate3d(0,0,0) scale(1)"}
-  ],{duration:250,easing:"cubic-bezier(.2,.75,.25,1)",fill:"none"});
+  ],{duration:560,easing:"cubic-bezier(.22,1,.36,1)",fill:"none"});
   wrap._kotoCardAnimation=animation;
   animation.onfinish=()=>{if(wrap._kotoCardAnimation===animation)wrap._kotoCardAnimation=null;};
  }
@@ -7088,6 +7168,99 @@ if(releaseNotice&&!releaseNoticeSeen){
   },{passive:true,capture:true});
   ["pointerup","pointercancel","dragstart"].forEach(function(t){document.addEventListener(t,release,{passive:true,capture:true})});
   window.addEventListener("blur",release);
+})();
+</script>
+
+<script>
+(function(){
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var $=function(id){return document.getElementById(id)};
+  var EASE="cubic-bezier(.22,1,.36,1)";
+  function play(el,frames,opt){ try{ if(el&&el.animate) return el.animate(frames,opt) }catch(e){} }
+
+  /* ---- Toast: ikon sesuai isi pesan + restart bar waktu ---- */
+  var toast=$("toast"), run=0;
+  if(toast&&window.MutationObserver){
+    new MutationObserver(function(){
+      var t=toast.textContent||"", k="sakura";
+      if(/Mantap|berhasil|diekspor/i.test(t)) k="ok";
+      else if(/tidak didukung|nonaktif|Belum ada|Gunakan menu/i.test(t)) k="warn";
+      else if(/dibatalkan|daftar ulang|dihapus|direset/i.test(t)) k="info";
+      toast.setAttribute("data-kind",k);
+      toast.setAttribute("data-run",(++run%2)?"a":"b");
+    }).observe(toast,{childList:true,characterData:true,subtree:true});
+  }
+
+  /* ---- Flashcard: pergantian kartu lewat jalur selain tombol next/kembali (acak, lesson, dikuasai, mode) ---- */
+  var counter=$("study-counter"), wrap=document.querySelector(".study-card-wrap");
+  if(counter&&wrap&&window.MutationObserver){
+    new MutationObserver(function(){
+      if(wrap._kotoCardAnimation) return;               /* next/kembali sudah dianimasikan app */
+      if(!wrap.offsetParent) return;                    /* flashcard sedang tidak tampil */
+      play(wrap,[{opacity:0,transform:"translate3d(0,16px,0) scale(.975)"},{opacity:1,transform:"none"}],{duration:620,easing:EASE});
+    }).observe(counter,{childList:true,characterData:true,subtree:true});
+  }
+
+  /* ---- Kuis: pertanyaan baru dan feedback ---- */
+  var qk=$("quiz-kanji"), qf=$("quiz-feedback");
+  if(qk&&window.MutationObserver){
+    new MutationObserver(function(){
+      if(!qk.offsetParent) return;
+      play(qk,[{opacity:0,transform:"translate3d(0,12px,0) scale(.985)"},{opacity:1,transform:"none"}],{duration:600,easing:EASE});
+    }).observe(qk,{childList:true});
+  }
+  if(qf&&window.MutationObserver){
+    new MutationObserver(function(){
+      if(!qf.textContent||!qf.offsetParent) return;
+      play(qf,[{opacity:0,transform:"translate3d(0,8px,0)"},{opacity:1,transform:"none"}],{duration:520,easing:EASE});
+    }).observe(qf,{childList:true,characterData:true,subtree:true});
+  }
+
+  /* ---- Kamus: daftar berganti (cari / filter) ---- */
+  var ll=$("library-list");
+  if(ll&&window.MutationObserver){
+    new MutationObserver(function(){
+      if(!ll.offsetParent) return;
+      play(ll,[{opacity:.25,transform:"translate3d(0,8px,0)"},{opacity:1,transform:"none"}],{duration:480,easing:EASE});
+    }).observe(ll,{childList:true});
+  }
+
+  /* ---- Ganti mode Kanji / Kosakata: crossfade seluruh isi ---- */
+  document.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("[data-mode-switch]");
+    if(!b||b.classList.contains("active")) return;
+    var m=document.querySelector("main");
+    play(m,[{opacity:0,transform:"translate3d(0,12px,0)"},{opacity:1,transform:"none"}],{duration:750,easing:EASE});
+  },true);
+
+  /* ---- Angka statistik naik pelan (hanya angka bulat / persen) ---- */
+  var sel=".home-stat strong,.home-progress-stats strong,#home-mastery,#stat-mastered,#stat-accuracy";
+  var els=[].slice.call(document.querySelectorAll(sel));
+  function ease(t){return 1-Math.pow(1-t,3)}
+  function count(el,to,suf){
+    if(el._ktRaf) cancelAnimationFrame(el._ktRaf);
+    var t0=performance.now(), D=900;
+    function step(now){
+      var k=Math.min(1,(now-t0)/D), v=Math.round(to*ease(k));
+      el._ktW=true; el.textContent=v+suf;
+      if(k<1) el._ktRaf=requestAnimationFrame(step); else el._ktRaf=null;
+    }
+    el._ktRaf=requestAnimationFrame(step);
+  }
+  if(window.MutationObserver){
+    var mo=new MutationObserver(function(ms){
+      ms.forEach(function(r){
+        var el=r.target.nodeType===1?r.target:r.target.parentNode;
+        while(el&&els.indexOf(el)<0) el=el.parentNode;
+        if(!el) return;
+        if(el._ktW){el._ktW=false;return}
+        if(!el.offsetParent) return;
+        var m=/^(\d+)(%?)$/.exec((el.textContent||"").trim());
+        if(m&&+m[1]>0) count(el,+m[1],m[2]);
+      });
+    });
+    els.forEach(function(el){mo.observe(el,{childList:true,characterData:true,subtree:true})});
+  }
 })();
 </script>
 </body></html>
